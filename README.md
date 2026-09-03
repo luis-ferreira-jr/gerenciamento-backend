@@ -17,13 +17,13 @@ Sobe com H2 em memória em `http://localhost:8080`, console H2 em `/h2-console`.
 - `GET /api/usuarios/{id}` — busca por id
 - `PUT /api/usuarios/{id}` — atualiza
 - `DELETE /api/usuarios/{id}` — remove
-- `GET /api/health` — health check (usado pelo Fly.io)
+- `GET /api/health` — health check (usado pelo Render)
 
 Senhas são armazenadas com hash BCrypt e nunca retornadas pela API.
 
 ## Deploy em produção
 
-O Vercel não roda Java, então o Angular vai para o Vercel e esta API vai para um host que suporta containers (Fly.io).
+O Vercel não roda Java, então o Angular vai para o Vercel e esta API vai para um host que suporta containers (Render, free tier sem cartão de crédito).
 
 ### 1. Banco de dados (Neon)
 
@@ -31,20 +31,21 @@ O Vercel não roda Java, então o Angular vai para o Vercel e esta API vai para 
 2. Copie a connection string (formato `postgresql://user:pass@host/db?sslmode=require`).
 3. Converta para JDBC trocando o prefixo: `jdbc:postgresql://host/db?sslmode=require`.
 
-### 2. Deploy da API (Fly.io)
+### 2. Deploy da API (Render)
 
-```bash
-# instale o flyctl: https://fly.io/docs/flyctl/install/
-fly auth login
-fly launch --no-deploy   # usa o fly.toml deste repo, ajuste o app name se pedir
-fly secrets set DATABASE_URL="jdbc:postgresql://<host>/<db>?sslmode=require"
-fly secrets set DATABASE_USERNAME="<usuario-neon>"
-fly secrets set DATABASE_PASSWORD="<senha-neon>"
-fly secrets set CORS_ALLOWED_ORIGINS="https://<seu-app>.vercel.app"
-fly deploy
-```
+1. Acesse https://render.com e crie conta (pode logar com GitHub).
+2. No dashboard, "New" → "Web Service" → conecte o repositório `gerenciamento-backend`.
+3. O Render detecta o `render.yaml` deste repo automaticamente (runtime Docker, plano free).
+4. Ao configurar, preencha as variáveis de ambiente pedidas:
+   - `DATABASE_URL=jdbc:postgresql://<host>/<db>?sslmode=require`
+   - `DATABASE_USERNAME=<usuario-neon>`
+   - `DATABASE_PASSWORD=<senha-neon>`
+   - `CORS_ALLOWED_ORIGINS=https://<seu-app>.vercel.app`
+5. Clique em "Create Web Service" — o Render builda a imagem Docker e sobe.
 
-Após o deploy, a API fica em `https://<app>.fly.dev`.
+Após o deploy, a API fica em `https://<app>.onrender.com`.
+
+**Atenção:** no plano free o serviço "dorme" após 15 minutos sem requisições — a primeira chamada depois disso demora ~30-50s pra acordar.
 
 ### 3. Aponte o frontend para a API
 
