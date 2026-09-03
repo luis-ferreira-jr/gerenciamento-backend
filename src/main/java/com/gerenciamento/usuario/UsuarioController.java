@@ -2,6 +2,7 @@ package com.gerenciamento.usuario;
 
 import com.gerenciamento.usuario.dto.UsuarioRequestDTO;
 import com.gerenciamento.usuario.dto.UsuarioResponseDTO;
+import com.gerenciamento.usuario.dto.UsuarioUpdateDTO;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsuarioRequestDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO dto) {
         return ResponseEntity.ok(new UsuarioResponseDTO(usuarioService.updateUser(id, dto)));
     }
 

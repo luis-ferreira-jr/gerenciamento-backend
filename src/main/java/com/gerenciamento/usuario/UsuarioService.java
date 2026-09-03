@@ -3,6 +3,7 @@ package com.gerenciamento.usuario;
 import com.gerenciamento.common.RecursoNaoEncontradoException;
 import com.gerenciamento.common.RegraDeNegocioException;
 import com.gerenciamento.usuario.dto.UsuarioRequestDTO;
+import com.gerenciamento.usuario.dto.UsuarioUpdateDTO;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
     }
 
-    public Usuario updateUser(Long id, UsuarioRequestDTO dto) {
+    public Usuario updateUser(Long id, UsuarioUpdateDTO dto) {
         Usuario existente = getUserById(id);
 
         if (!existente.getEmail().equals(dto.getEmail()) &&
